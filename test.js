@@ -42,22 +42,24 @@ async function respFn() {
    return;
 }
 
-let respFnDebounce = debounce(respFn);
-
-input.addEventListener('input', respFnDebounce);
+function removeRepoCard(event) {
+   if (event.target.getAttribute('class') === 'repo__closebtn') {
+      event.target.parentNode.remove();
+   }
+}
 
 autocompleteArea.addEventListener('click', (event) => {
    repo.insertAdjacentHTML(
       'beforeend',
       `<div class='repo__card'>
-         <div class="repo__info">
-            <p class="repo__info-item">Name: ${event.target.getAttribute(
+         <div>
+            <p class="repo__info">Name: ${event.target.getAttribute(
                'data-name'
             )}</p>
-            <p class="repo__info-item">Owner: ${event.target.getAttribute(
+            <p class="repo__info">Owner: ${event.target.getAttribute(
                'data-owner'
             )}</p>
-            <p class="repo__info-item">Stars: ${event.target.getAttribute(
+            <p class="repo__info">Stars: ${event.target.getAttribute(
                'data-stars'
             )}</p>
          </div>
@@ -68,11 +70,6 @@ autocompleteArea.addEventListener('click', (event) => {
    input.value = '';
 });
 
-function removeRepoCard(event) {
-   if (event.target.getAttribute('class') === 'repo__closebtn') {
-      event.target.parentNode.innerHTML = '';
-      event.target.parentNode.className = '';
-   }
-}
-
+let respFnDebounce = debounce(respFn);
+input.addEventListener('input', respFnDebounce);
 repo.addEventListener('click', removeRepoCard);
