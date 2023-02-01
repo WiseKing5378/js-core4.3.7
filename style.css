@@ -31,6 +31,10 @@ body {
    padding: 10px;
    font-size: 30px;
 }
+.autocomplete__item:hover {
+   background: #65cdf9;
+   cursor: pointer;
+}
 
 .repo {
    margin-top: 45px;
@@ -48,13 +52,14 @@ body {
 }
 
 .repo__info {
-}
-.repo__info-item {
    padding: 0;
    margin: 0;
 }
 .repo__closebtn {
-   background-color: coral;
-   width: 40px;
-   height: 40px;
+   cursor: pointer;
+   background-image: url(close.png);
+   background-position: center center;
+   background-size: 42px;
+   width: 42px;
+   height: 42px;
 }
