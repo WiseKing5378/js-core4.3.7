@@ -1,18 +1,18 @@
-let input = document.querySelector('input');
-let autocompleteArea = document.querySelector('.autocomplete');
-let repo = document.querySelector('.repo');
+const input = document.querySelector('input');
+const autocompleteArea = document.querySelector('.autocomplete');
+const repo = document.querySelector('.repo');
 
 function showAutocomplete(data) {
-   for (let i = 0; i < 5; i++) {
-      let name = data.items[i].name;
-      let owner = data.items[i].owner.login;
-      let stars = data.items[i].stargazers_count;
+   data.items.forEach((i) => {
+      const name = i.name;
+      const owner = i.owner.login;
+      const stars = i.stargazers_count;
 
       autocompleteArea.insertAdjacentHTML(
          'beforeend',
          `<div class='autocomplete__item' data-name='${name}' data-owner='${owner}' data-stars='${stars}'>${name}</div>`
       );
-   }
+   });
 }
 
 function removeAutocomplete() {
@@ -24,19 +24,19 @@ function debounce(fn) {
    return function () {
       clearTimeout(time);
       time = setTimeout(() => {
-         fn();
+         fn.apply(this);
       }, 700);
    };
 }
 
 async function respFn() {
    removeAutocomplete();
-   let inputValue = input.value.replace(/\s+/g, '');
-   if (inputValue != '') {
-      let resp = await fetch(
-         `https://api.github.com/search/repositories?q=${inputValue}`
+   const inputValue = input.value.replace(/\s+/g, '');
+   if (inputValue) {
+      const resp = await fetch(
+         `https://api.github.com/search/repositories?q=${inputValue}&per_page=5`
       );
-      let data = await resp.json();
+      const data = await resp.json();
       showAutocomplete(data);
    }
    return;
@@ -45,6 +45,7 @@ async function respFn() {
 function removeRepoCard(event) {
    if (event.target.getAttribute('class') === 'repo__closebtn') {
       event.target.parentNode.remove();
+      event.target.parentNode.removeEventListener('click', removeRepoCard);
    }
 }
 
@@ -70,6 +71,6 @@ autocompleteArea.addEventListener('click', (event) => {
    input.value = '';
 });
 
-let respFnDebounce = debounce(respFn);
+const respFnDebounce = debounce(respFn);
 input.addEventListener('input', respFnDebounce);
 repo.addEventListener('click', removeRepoCard);
